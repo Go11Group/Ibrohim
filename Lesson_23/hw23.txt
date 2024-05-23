@@ -1,0 +1,24 @@
+update - table'digi ma'lumotlarni o'zgartirishda ishlatiladi.
+Update <table_name> Set <column_name(ustun)> = <value(qiymat)> Where condition(shart);
+Ex: Update students Set age = 15 Where id = 4;
+
+delete - table'digi ma'lumotlarni o'chirishda ishlatiladi.
+Delete From <table_name>; - hamma qatorlarni o'chiradi
+Delete From <table_name> Where condition(shart); - shart to'g'ri kegan qatorlarni o'chiradi
+Ex: Delete from students Where age > 18;
+
+order by - table'digi ma'lumotlarni sort ya'ni tartiblangan holatda chiqarishda ishlatiladi, default holda o'sish tartibda sort qiladi.
+Select <column_name(ustun)> From <table_name> Order By <column_name(ustun)> Asc; - o'sish tartibda
+Select <column_name(ustun)> From <table_name> Order By <column_name(ustun)> Desc; - kamayish tartibda
+Ex: Select * from students Order By age, id Desc;
+
+group by - table'digi bir xil ma'lumotlarni birlashtirishda ishlatiladi.
+Select <column_name(ustun)> From <table_name> Group By <column_name(ustun)>;
+Ex: Select name,age from students Group By name;
+
+join - mos kelagan ustunga asoslangan holda bir qancha table'lardan ma'lumot olishda ishlatiladi.
+Select <t1.column_name>, <t2.column_name> From <t1> Inner Join <t2> On t1.matching_column = t2.matching_column; - 2ta table'digi mos kegan ma'lumotlarni bitta table'ga birlashtiradi
+Select <t1.column_name>, <t2.column_name> From <t1> Left Join <t2> On t1.matching_column = t2.matching_column; - 1-chi table'digi hamma ma'lumotlarni va 2-chi table'digi mos kegan ma'lumotlarni bitta table'ga birlashtiradi
+Select <t1.column_name>, <t2.column_name> From <t1> Right Join <t2> On t1.matching_column = t2.matching_column; - 1-chi table'digi mos kegan ma'lumotlarni va 2-chi table'digi hamma ma'lumotlarni bitta table'ga birlashtiradi
+Select <t1.column_name>, <t2.column_name> From <t1> Full Join <t2> On t1.matching_column = t2.matching_column; - 2ta table'digi mos kegan ma'lumotlarni va mos kemagan ma'lumotlarni Null sifatida bitta table'ga birlashtiradi
+Ex: Select * from students1 Inner Join students2 On students1.age = students2.age;
