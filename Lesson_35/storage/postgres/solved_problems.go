@@ -28,11 +28,10 @@ func (up *UserProblemRepo) GetUserProblems(userID int) ([]model.Problem, error) 
 	}()
 
 	query := `
-	SELECT 	p.id, p.title, p.description, p.difficulty,
-            sp.solved_at
-    FROM users u
-    JOIN solved_problems sp ON u.id = sp.user_id
-    JOIN problems p ON sp.product_id = p.id
+	SELECT 	p.id, p.title, p.description, p.difficulty
+	FROM users u
+	JOIN solved_problems sp ON u.id = sp.user_id
+	JOIN problems p ON sp.problem_id = p.id
 	WHERE u.id = $1`
 	rows, err := up.DB.Query(query, userID)
 	if err != nil {
@@ -42,9 +41,9 @@ func (up *UserProblemRepo) GetUserProblems(userID int) ([]model.Problem, error) 
 	defer rows.Close()
 
 	var problems []model.Problem
-	var pr model.Problem
 	for rows.Next() {
-		err := rows.Scan(&pr.ID, &pr.Title, &pr.Description, &pr.Difficulty, &pr.Acceptance)
+		var pr model.Problem
+		err := rows.Scan(&pr.ID, &pr.Title, &pr.Description, &pr.Difficulty)
 		if err != nil {
             return nil, err
         }
@@ -66,18 +65,16 @@ func (up *UserProblemRepo) AddProblemToUser(userID, problemID int, time time.Tim
 		}
 	}()
 
-	query := `insert into solved_problems(user_id, problem_id, solved_at)
-	values($1, $2, $3)
-	on conflict (user_id, product_id)
-	do update set solved_at = $3`
+	query := `
+	INSERT INTO solved_problems (user_id, problem_id, solved_at)
+	VALUES ($1, $2, $3)
+	ON CONFLICT (user_id, problem_id)
+	DO UPDATE SET solved_at = $3`
 	_, err = up.DB.Exec(query, userID, problemID, time)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
-func (up *UserProblemRepo) UpdateTimeOfSolving(userID, problemID int, time time.Time) error {
+func (up *UserProblemRepo) UpdateTimeOfSolution(userID, problemID int, time time.Time) error {
 	tr, err := up.DB.Begin()
 	if err != nil {
 		return err
@@ -92,10 +89,7 @@ func (up *UserProblemRepo) UpdateTimeOfSolving(userID, problemID int, time time.
 	
 	query := "update solved_problems set solved_at = $3 where user_id = $1 and problem_id = $2"
 	_, err = up.DB.Exec(query, userID, problemID, time)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (up *UserProblemRepo) RemoveProblemFromUser(userID, problemID int) error {
@@ -113,8 +107,5 @@ func (up *UserProblemRepo) RemoveProblemFromUser(userID, problemID int) error {
 	
 	_, err = up.DB.Exec("delete from solved_problems where user_id = $1 and problem_id = $2",
 	userID, problemID)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }

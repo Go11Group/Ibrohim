@@ -42,14 +42,13 @@ func (u *UserRepo) GetUser(filter model.User) ([]model.User, error) {
 
 	rows, err := u.DB.Query(query, params...)
 	if err != nil {
-		rows.Close()
 		return nil, err
 	}
 	defer rows.Close()
 
 	var users []model.User
-	var user model.User
 	for rows.Next() {
+		var user model.User
 		err = rows.Scan(&user.ID, &user.Username, &user.Email, &user.Password)
 		if err != nil {
 			return nil, err
@@ -65,10 +64,7 @@ func (u *UserRepo) CreateUser(user model.User) error {
 	}
 	_, err := u.DB.Exec("insert into users(username, email, password) values($1, $2, $3)",
 	user.Username, user.Email, user.Password)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (u *UserRepo) UpdateUser(user model.User) error {
@@ -97,16 +93,10 @@ func (u *UserRepo) UpdateUser(user model.User) error {
 	params = append(params, user.ID)
 	
 	_, err := u.DB.Exec(query, params...)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (u *UserRepo) DeleteUser(id int) error {
 	_, err := u.DB.Exec("delete from users where id = $1", id)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }

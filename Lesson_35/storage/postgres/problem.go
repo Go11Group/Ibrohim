@@ -18,31 +18,25 @@ func NewProblemRepo(db *sql.DB) *ProblemRepo {
 func (p *ProblemRepo) GetProblem(filter model.Problem) ([]model.Problem, error) {
 	query := "select * from problems where 1=1"
 	var params []interface{}
-	paramIndex := 1
 	if filter.ID > 0 {
-		query += " and id = $" + strconv.Itoa(paramIndex)
+		query += " and id = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.ID)
-		paramIndex++
 	}
 	if filter.Title != "" {
-		query += " and title = $" + strconv.Itoa(paramIndex)
+		query += " and title = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.Title)
-		paramIndex++
 	}
 	if filter.Description != "" {
-		query += " and description = $" + strconv.Itoa(paramIndex)
+		query += " and description = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.Description)
-		paramIndex++
 	}
 	if filter.Difficulty != "" {
-		query += " and difficulty = $" + strconv.Itoa(paramIndex)
+		query += " and difficulty = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.Difficulty)
-		paramIndex++
 	}
 	if filter.Acceptance > 0 {
-		query += " and acceptance = $" + strconv.Itoa(paramIndex)
+		query += " and acceptance = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.Acceptance)
-		paramIndex++
 	}
 
 	rows, err := p.DB.Query(query, params...)
@@ -52,8 +46,8 @@ func (p *ProblemRepo) GetProblem(filter model.Problem) ([]model.Problem, error) 
 	defer rows.Close()
 
 	var problems []model.Problem
-	var pr model.Problem
 	for rows.Next() {
+		var pr model.Problem
 		err := rows.Scan(&pr.ID, &pr.Title, &pr.Description, &pr.Difficulty, &pr.Acceptance)
 		if err != nil {
 			return nil, err
@@ -69,10 +63,7 @@ func (p *ProblemRepo) CreateProblem(problem model.Problem) error {
 	}
 	_, err := p.DB.Exec("insert into problems(title, description, difficulty, acceptance) values($1,$2,$3,$4)",
 	problem.Title, problem.Description, problem.Difficulty, problem.Acceptance)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (p *ProblemRepo) UpdateProblem(problem model.Problem) error {
@@ -106,16 +97,10 @@ func (p *ProblemRepo) UpdateProblem(problem model.Problem) error {
 	params = append(params, problem.ID)
 
 	_, err := p.DB.Exec(query, params...)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (p *ProblemRepo) DeleteProblem(id int) error {
 	_, err := p.DB.Exec("delete from problems where id = $1", id)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
