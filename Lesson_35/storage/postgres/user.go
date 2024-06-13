@@ -18,26 +18,21 @@ func NewUserRepo(db *sql.DB) *UserRepo {
 func (u *UserRepo) GetUser(filter model.User) ([]model.User, error) {
 	query := "select * from users where 1=1"
 	var params []interface{}
-	paramIndex := 1
 	if filter.ID > 0 {
-		query += " and id = $" + strconv.Itoa(paramIndex)
+		query += " and id = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.ID)
-		paramIndex++
 	}
 	if filter.Username != "" {
-		query += " and username = $" + strconv.Itoa(paramIndex)
+		query += " and username = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.Username)
-		paramIndex++
 	}
 	if filter.Email != "" {
-		query += " and email = $" + strconv.Itoa(paramIndex)
+		query += " and email = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.Email)
-		paramIndex++
 	}
 	if filter.Password != "" {
-		query += " and password = $" + strconv.Itoa(paramIndex)
+		query += " and password = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.Password)
-		paramIndex++
 	}
 
 	rows, err := u.DB.Query(query, params...)
@@ -70,26 +65,22 @@ func (u *UserRepo) CreateUser(user model.User) error {
 func (u *UserRepo) UpdateUser(user model.User) error {
 	query := "update users set"
 	var params []interface{}
-	paramIndex := 1
 	if user.Username != "" {
-		query += " username = $" + strconv.Itoa(paramIndex)
+		query += " username = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, user.Username)
-		paramIndex++
 	}
 	if user.Email != "" {
-		query += ", email = $" + strconv.Itoa(paramIndex)
+		query += ", email = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, user.Email)
-		paramIndex++
 	}
 	if user.Password != "" {
-		query += ", password = $" + strconv.Itoa(paramIndex)
+		query += ", password = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, user.Password)
-		paramIndex++
 	}
-	if paramIndex == 1 {
+	if len(params) == 0 {
 		return errors.New("no fields provided for update")
 	}
-	query += " where id = $" + strconv.Itoa(paramIndex)
+	query += " where id = $" + strconv.Itoa(len(params) + 1)
 	params = append(params, user.ID)
 	
 	_, err := u.DB.Exec(query, params...)

@@ -17,7 +17,7 @@ func main() {
 	pRepo := postgres.NewProblemRepo(db)
 	upRepo := postgres.NewUserProblemRepo(db)
 	server := handler.NewHandler(handler.Handler{User: uRepo, Problem: pRepo, UserProblem: upRepo})
-
+	
 	// PopulateUsers(uRepo)
 	// PopulateProblems(pRepo)
 	// PopulateUserProblems(uRepo, pRepo, upRepo)

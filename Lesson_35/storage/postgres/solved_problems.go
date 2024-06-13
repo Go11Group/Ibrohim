@@ -15,18 +15,11 @@ func NewUserProblemRepo(db *sql.DB) *UserProblemRepo {
 }
 
 func (up *UserProblemRepo) GetUserProblems(userID int) ([]model.Problem, error) {
-	tr, err := up.DB.Begin()
+	tr, err := BeginTransaction(up)
 	if err != nil {
 		return nil, err
 	}
-	defer func() {
-		if err != nil {
-			tr.Rollback()
-		} else {
-			tr.Commit()
-		}
-	}()
-
+	defer CloseTransaction(tr, err)
 	query := `
 	SELECT 	p.id, p.title, p.description, p.difficulty
 	FROM users u
@@ -53,18 +46,11 @@ func (up *UserProblemRepo) GetUserProblems(userID int) ([]model.Problem, error) 
 }
 
 func (up *UserProblemRepo) AddProblemToUser(userID, problemID int, time time.Time) error {
-	tr, err := up.DB.Begin()
+	tr, err := BeginTransaction(up)
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if err != nil {
-			tr.Rollback()
-		} else {
-			tr.Commit()
-		}
-	}()
-
+	defer CloseTransaction(tr, err)
 	query := `
 	INSERT INTO solved_problems (user_id, problem_id, solved_at)
 	VALUES ($1, $2, $3)
@@ -75,36 +61,22 @@ func (up *UserProblemRepo) AddProblemToUser(userID, problemID int, time time.Tim
 }
 
 func (up *UserProblemRepo) UpdateTimeOfSolution(userID, problemID int, time time.Time) error {
-	tr, err := up.DB.Begin()
+	tr, err := BeginTransaction(up)
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if err != nil {
-			tr.Rollback()
-		} else {
-			tr.Commit()
-		}
-	}()
-	
+	defer CloseTransaction(tr, err)
 	query := "update solved_problems set solved_at = $3 where user_id = $1 and problem_id = $2"
 	_, err = up.DB.Exec(query, userID, problemID, time)
 	return err
 }
 
 func (up *UserProblemRepo) RemoveProblemFromUser(userID, problemID int) error {
-	tr, err := up.DB.Begin()
+	tr, err := BeginTransaction(up)
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if err != nil {
-			tr.Rollback()
-		} else {
-			tr.Commit()
-		}
-	}()
-	
+	defer CloseTransaction(tr, err)
 	_, err = up.DB.Exec("delete from solved_problems where user_id = $1 and problem_id = $2",
 	userID, problemID)
 	return err

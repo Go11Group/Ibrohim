@@ -28,3 +28,19 @@ func ConnectDB() (*sql.DB, error) {
 	}
 	return db, nil
 }
+
+func BeginTransaction(up *UserProblemRepo) (*sql.Tx, error) {
+	tr, err := up.DB.Begin()
+	if err != nil {
+		return nil, err
+	}
+	return tr, nil
+}
+
+func CloseTransaction(tr *sql.Tx, err error) {
+	if err != nil {
+		tr.Rollback()
+	} else {
+		tr.Commit()
+	}
+}

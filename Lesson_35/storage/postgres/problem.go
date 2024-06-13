@@ -34,7 +34,7 @@ func (p *ProblemRepo) GetProblem(filter model.Problem) ([]model.Problem, error) 
 		query += " and difficulty = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.Difficulty)
 	}
-	if filter.Acceptance > 0 {
+	if filter.Acceptance >= 0 {
 		query += " and acceptance = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, filter.Acceptance)
 	}
@@ -69,31 +69,26 @@ func (p *ProblemRepo) CreateProblem(problem model.Problem) error {
 func (p *ProblemRepo) UpdateProblem(problem model.Problem) error {
 	query := "update problems set"
 	var params []interface{}
-	paramIndex := 1
 	if problem.Title != "" {
-		query += " title = $" + strconv.Itoa(paramIndex)
+		query += " title = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, problem.Title)
-		paramIndex++
 	}
 	if problem.Description != "" {
-		query += ", description = $" + strconv.Itoa(paramIndex)
+		query += ", description = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, problem.Description)
-		paramIndex++
 	}
 	if problem.Difficulty != "" {
-		query += ", difficulty = $" + strconv.Itoa(paramIndex)
+		query += ", difficulty = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, problem.Difficulty)
-		paramIndex++
 	}
-	if problem.Acceptance > 0 {
-		query += ", acceptance = $" + strconv.Itoa(paramIndex)
+	if problem.Acceptance >= 0 {
+		query += ", acceptance = $" + strconv.Itoa(len(params) + 1)
 		params = append(params, problem.Acceptance)
-		paramIndex++
 	}
-	if paramIndex == 1 {
+	if len(params) == 0 {
 		return errors.New("no fields provided for update")
 	}
-	query += " where id = $" + strconv.Itoa(paramIndex)
+	query += " where id = $" + strconv.Itoa(len(params) + 1)
 	params = append(params, problem.ID)
 
 	_, err := p.DB.Exec(query, params...)

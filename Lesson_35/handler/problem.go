@@ -9,16 +9,34 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func (h * Handler) problemGet(w http.ResponseWriter, r *http.Request) {
+func GetProblemID(w http.ResponseWriter, r *http.Request) (int, error) {
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
-		http.Error(w, "Invalid product ID", http.StatusBadRequest)
+		http.Error(w, "Invalid problem ID", http.StatusBadRequest)
 		fmt.Println("Error: ", err)
+		return 0, err
+	}
+	return id, nil
+}
+
+func ReadProblemBody(w http.ResponseWriter, r *http.Request, p model.Problem) error {
+	err := json.NewDecoder(r.Body).Decode(&p)
+	if err != nil {
+		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
+		fmt.Println("Error: ", err)
+		return err
+	}
+	return nil
+}
+
+func (h * Handler) problemGet(w http.ResponseWriter, r *http.Request) {
+	id, err := GetProblemID(w, r)
+	if id == 0 || err != nil {
 		return
 	}
 	problems, err := h.Problem.GetProblem(model.Problem{ID: id})
 	if err != nil {
-		http.Error(w, "Product not found", http.StatusNotFound)
+		http.Error(w, "Problem not found", http.StatusNotFound)
 		fmt.Println("Error: ", err)
 		return
 	}
@@ -32,10 +50,8 @@ func (h * Handler) problemGet(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) problemPost(w http.ResponseWriter, r *http.Request) {
 	p := model.Problem{}
-	err := json.NewDecoder(r.Body).Decode(&p)
+	err := ReadProblemBody(w, r, p)
 	if err != nil {
-		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
-		fmt.Println("Error: ", err)
 		return
 	}
 	err = h.Problem.CreateProblem(p)
@@ -44,22 +60,17 @@ func (h *Handler) problemPost(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error: ", err)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
 	fmt.Fprintf(w, "New problem inserted to database")
 }
 
 func (h *Handler) problemPut(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(mux.Vars(r)["id"])
-	if err != nil {
-		http.Error(w, "Invalid problem ID", http.StatusBadRequest)
-		fmt.Println("Error: ", err)
+	id, err := GetProblemID(w, r)
+	if id == 0 || err != nil {
 		return
 	}
 	p := model.Problem{ID: id}
-	err = json.NewDecoder(r.Body).Decode(&p)
+	err = ReadProblemBody(w, r, p)
 	if err != nil {
-		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
-		fmt.Println("Error: ", err)
 		return
 	}
 	err = h.Problem.UpdateProblem(p)
@@ -72,10 +83,8 @@ func (h *Handler) problemPut(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) problemDelete(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(mux.Vars(r)["id"])
-	if err != nil {
-		http.Error(w, "Invalid problem ID", http.StatusBadRequest)
-		fmt.Println("Error: ", err)
+	id, err := GetProblemID(w, r)
+	if id == 0 || err != nil {
 		return
 	}
 	err = h.Problem.DeleteProblem(id)
