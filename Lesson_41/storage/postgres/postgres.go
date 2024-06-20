@@ -1,6 +1,9 @@
 package postgres
 
-import "database/sql"
+import (
+	"database/sql"
+	_ "github.com/lib/pq"
+)
 
 func ConnectDB() (*sql.DB, error) {
 	con := "postgres://postgres:root@localhost:5432/postgres?sslmode=disable"
