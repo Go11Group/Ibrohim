@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS occupation (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    field VARCHAR NOT NULL
+);

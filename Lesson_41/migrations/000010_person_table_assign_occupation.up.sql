@@ -1,0 +1,1 @@
+UPDATE person SET occupation_id = FLOOR(RANDOM() * 4) + 1;
