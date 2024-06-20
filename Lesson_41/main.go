@@ -15,7 +15,11 @@ func main() {
 
 	pRepo := postgres.NewPersonRepo(db)
 	server := handler.NewHandler(handler.Handler{Person: pRepo})
-	go handler.Post()
+	// go handler.Get()
+	// go handler.Post()
+	// go handler.Put()
+	// go handler.Delete()
+	// go handler.GetAll()
 	fmt.Println("Server is listening on port 8080...")
 	err = server.ListenAndServe()
 	if err != nil {

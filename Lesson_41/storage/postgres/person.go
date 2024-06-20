@@ -37,7 +37,8 @@ func (p *PersonRepo) Read(id int) (*model.Person, error) {
 }
 
 func (p *PersonRepo) Update(id int, person model.Person) error {
-	_, err := p.DB.Exec("update person set name = $1, age = $2, marital_status = $3", person.Name, person.Age, person.MaritalStatus)
+	query := "update person set name = $1, age = $2, marital_status = $3 where id = $4"
+	_, err := p.DB.Exec(query, person.Name, person.Age, person.MaritalStatus, id)
 	if err != nil {
 		return errors.Wrap(err, "failed to update person")
 	}
