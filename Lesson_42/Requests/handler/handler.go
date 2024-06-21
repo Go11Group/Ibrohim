@@ -23,19 +23,22 @@ func NewRoute() *http.Server {
 	mux.HandleFunc("GET /courses/", courseGet)
 	mux.HandleFunc("PUT /courses/", coursePut)
 	mux.HandleFunc("DELETE /courses/", courseDelete)
-	mux.HandleFunc("GET /courses/all", courseGetAll)
+	mux.HandleFunc("GET /courses-all", courseGetAll)
+	mux.HandleFunc("GET /courses-lessons/", courseLessons)
+	mux.HandleFunc("GET /courses-enrollments/", courseUsers)
+	mux.HandleFunc("GET /courses-popular", coursePopular)
 
 	mux.HandleFunc("POST /lessons", lessonPost)
 	mux.HandleFunc("GET /lessons/", lessonGet)
 	mux.HandleFunc("PUT /lessons/", lessonPut)
 	mux.HandleFunc("DELETE /lessons/", lessonDelete)
-	mux.HandleFunc("GET /lessons/all", lessonGetAll)
+	mux.HandleFunc("GET /lessons-all", lessonGetAll)
 
 	mux.HandleFunc("POST /enrollments", enrollmentPost)
 	mux.HandleFunc("GET /enrollments/", enrollmentGet)
 	mux.HandleFunc("PUT /enrollments/", enrollmentPut)
 	mux.HandleFunc("DELETE /enrollments/", enrollmentDelete)
-	mux.HandleFunc("GET /enrollments/all", enrollmentGetAll)
+	mux.HandleFunc("GET /enrollments-all", enrollmentGetAll)
 
 	return &http.Server{Addr: "localhost:8081", Handler: mux}
 }

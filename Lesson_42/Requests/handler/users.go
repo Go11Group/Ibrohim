@@ -7,7 +7,7 @@ import (
 
 func userGet(w http.ResponseWriter, r *http.Request) {
 	url := "http://localhost:8080/language_learning_app/users/" + strings.TrimPrefix(r.URL.Path, "/users/")
-	
+
 	resp, err := http.Get(url)
 	if err != nil {
 		http.Error(w, "error fetching URL: "+err.Error(), 500)
@@ -20,10 +20,10 @@ func userGet(w http.ResponseWriter, r *http.Request) {
 
 func userPost(w http.ResponseWriter, r *http.Request) {
 	body, contentType, err := parseFormData(r)
-    if err != nil {
-        http.Error(w, "error parsing form: "+err.Error(), 400)
-        return
-    }
+	if err != nil {
+		http.Error(w, "error parsing json data: "+err.Error(), 400)
+		return
+	}
 
 	url := "http://localhost:8080/language_learning_app/users"
 	resp, err := http.Post(url, contentType, body)
@@ -38,10 +38,10 @@ func userPost(w http.ResponseWriter, r *http.Request) {
 
 func userPut(w http.ResponseWriter, r *http.Request) {
 	body, contentType, err := parseFormData(r)
-    if err != nil {
-        http.Error(w, "error parsing form: "+err.Error(), 400)
-        return
-    }
+	if err != nil {
+		http.Error(w, "error parsing json data: "+err.Error(), 400)
+		return
+	}
 
 	url := "http://localhost:8080/language_learning_app/users/" + strings.TrimPrefix(r.URL.Path, "/users/")
 
@@ -103,7 +103,7 @@ func userGetAll(w http.ResponseWriter, r *http.Request) {
 
 func userCoursesGet(w http.ResponseWriter, r *http.Request) {
 	url := "http://localhost:8080/language_learning_app/users/" + strings.TrimPrefix(r.URL.Path, "/users-courses/") + "/courses"
-	
+
 	resp, err := http.Get(url)
 	if err != nil {
 		http.Error(w, "error fetching URL: "+err.Error(), 500)
