@@ -3,9 +3,9 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
-	"github.com/pkg/errors"
 )
 
 func NewRoute() *http.Server {
@@ -58,13 +58,13 @@ func parseFormData(r *http.Request) (*bytes.Buffer, string, error) {
 	var jsonData map[string]interface{}
     err := json.NewDecoder(r.Body).Decode(&jsonData)
     if err != nil {
-        return nil, "", errors.Wrap(err, "error parsing JSON:")
+        return nil, "", errors.New("error parsing JSON: "+ err.Error())
     }
 
     body := &bytes.Buffer{}
     err = json.NewEncoder(body).Encode(jsonData)
 	if err != nil {
-		return nil, "", errors.Wrap(err, "error encoding JSON to buffer:")
+		return nil, "", errors.New("error encoding JSON to buffer: "+ err.Error())
 	}
 	return body, "application/json", nil
 }

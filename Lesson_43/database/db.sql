@@ -1,0 +1,1 @@
+CREATE DATABASE metro_system; -- use only once
