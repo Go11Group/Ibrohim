@@ -27,7 +27,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	uzbekWords := &pb.Uzbek{
-		Words: []string{"olma", "jamiyat", "qor"},
+		Words: []string{"olma", "jamiyat", "qor", "yugur"},
 	}
 
 	resp, err := c.Translate(ctx, uzbekWords)

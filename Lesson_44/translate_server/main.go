@@ -8,6 +8,8 @@ import (
 	"net"
 	pb "translator/translate_service"
 
+	translate "github.com/bas24/googletranslatefree"
+	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
@@ -21,13 +23,22 @@ func (s *server) MustEmbedUnimplementedTranslatorServer() {}
 
 func (s *server) Translate(ctx context.Context, in *pb.Uzbek) (*pb.English, error) {
 	log.Printf("Recieved: %v", in.GetWords())
+	var translatedWords []string
 
-	return &pb.English{Words: []string{"apple", "society", "snow"}}, nil
+	for _, w := range in.GetWords() {
+		translated, err := translate.Translate(w, "uz", "en")
+		if err != nil {
+			return nil, errors.Wrapf(err, "failed to translate %s:", w)
+		}
+		translatedWords = append(translatedWords, translated)
+	}
+	
+	return &pb.English{Words: translatedWords}, nil
 }
 
 func main() {
 	flag.Parse()
-
+	
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
