@@ -18,7 +18,7 @@ func NewWeatherRepo(db *sql.DB) *WeatherRepo {
 func (wr *WeatherRepo) GetCurrentWeather(p *pb.Place) (*pb.Weather, error) {
 	w := &pb.Weather{}
 
-	query := "select temperature, humidity, wind_speed from weather_conditions where city = $1 and date = now()"
+	query := "select temperature, humidity, wind_speed from weather_conditions where city = $1 and date = CURRENT_DATE"
 	err := wr.DB.QueryRow(query, p.City).Scan(&w.Temperature, &w.Humidity, &w.WindSpeed)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -47,7 +47,7 @@ func (wr *WeatherRepo) GetWeatherForecast(f *pb.Forecast) (*pb.Weather, error) {
 
 func (wr *WeatherRepo) ReportWeatherCondition(p *pb.Place) (*pb.WeatherType, error) {
 	w := &pb.WeatherType{}
-	query := "select weather_type from weather_conditions where city = $1 and date = now()"
+	query := "select weather_type from weather_conditions where city = $1 and date = CURRENT_DATE"
 	err := wr.DB.QueryRow(query, p.City).Scan(&w.Type)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

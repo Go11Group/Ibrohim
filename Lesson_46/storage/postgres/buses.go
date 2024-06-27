@@ -19,7 +19,12 @@ func NewBusRepo(db *sql.DB) *BusRepo {
 func (br *BusRepo) GetBusSchedule(n *pb.Number) (*pb.Schedule, error) {
 	sch := &pb.Schedule{}
 
-	query := "select monday, tuesday, wednesday, thursday, friday, saturday, sunday from schedule where bus_id = $1"
+	query := `
+	select monday, tuesday, wednesday, thursday, friday, saturday, sunday
+	from schedule s
+	join buses b on s.bus_id = b.id
+	where b.number = $1
+	group by s.monday, s.tuesday, s.wednesday, s.thursday, s.friday, s.saturday, s.sunday`
 	err := br.DB.QueryRow(query, n.Number).Scan(&sch.Monday, &sch.Tuesday, &sch.Wednesday, &sch.Thursday, &sch.Friday, &sch.Saturday, &sch.Sunday)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get schedule")
