@@ -8,7 +8,7 @@ import (
 )
 
 func ConnectDB() (*sql.DB, error) {
-	con := "postgres://postgres:root@localhost:5432/postgres?sslmode=disable"
+	con := "postgres://postgres:root@localhost:5432/weather_transport?sslmode=disable"
 	db, err := sql.Open("postgres", con)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to connect to database")
