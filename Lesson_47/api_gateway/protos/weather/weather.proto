@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option go_package = "genproto/";
+
+package weather;
+
+service WeatherService {
+    rpc GetCurrentWeather (Place) returns (Weather);
+    rpc GetWeatherForecast (Forecast) returns (Weather);
+    rpc ReportWeatherCondition (Place) returns (WeatherType);
+}
+
+message Place {
+    string country = 1;
+    string city = 2;
+}
+
+message Forecast {
+    Place place = 1;
+    string date = 2;
+}
+
+message Weather {
+    int32 temperature = 1;
+    int32 humidity = 2;
+    int32 wind_speed = 3;
+}
+
+message WeatherType {
+    string type = 1;
+}

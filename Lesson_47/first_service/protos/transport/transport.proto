@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option go_package = "genproto/transport/";
+
+package protos;
+
+service TransportService {
+    rpc GetBusSchedule (Number) returns (Schedule);
+    rpc TrackBusLocation (Number) returns (GPS);
+    rpc ReportTrafficJam (Route) returns (Traffic);
+}
+
+message Bus {
+    string id = 1;
+    string number = 2;
+    int32 capacity = 3;
+    Schedule schedule = 4;
+}
+
+message Number {
+    string number = 1;
+}
+
+message Schedule {
+    string monday = 1;
+    string tuesday = 2;
+    string wednesday = 3;
+    string thursday = 4;
+    string friday = 5;
+    string saturday = 6;
+    string sunday = 7;
+}
+
+message GPS {
+    float latitude = 1;
+    float longitude = 2;
+}
+
+message Route {
+    string name = 1;
+    int32 transports = 2;
+}
+
+message Traffic {
+    string level = 1;
+}
