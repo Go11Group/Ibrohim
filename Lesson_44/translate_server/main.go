@@ -8,11 +8,11 @@ import (
 	"net"
 	pb "translator/translate_service"
 
-	translate "github.com/bas24/googletranslatefree"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
+var words = map[string]string{"olma": "apple", "jamiyat": "society", "qor": "snow", "yugur": "run"}
 var port = flag.Int("port", 50051, "The server port")
 
 type server struct {
@@ -26,9 +26,9 @@ func (s *server) Translate(ctx context.Context, in *pb.Uzbek) (*pb.English, erro
 	var translatedWords []string
 
 	for _, w := range in.GetWords() {
-		translated, err := translate.Translate(w, "uz", "en")
-		if err != nil {
-			return nil, errors.Wrapf(err, "failed to translate %s:", w)
+		translated, ok := words[w]
+		if !ok {
+			return nil, errors.New("failed to translate "+w)
 		}
 		translatedWords = append(translatedWords, translated)
 	}
