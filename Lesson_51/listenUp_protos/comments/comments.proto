@@ -6,10 +6,11 @@ package comments;
 
 service Comments {
     rpc CreateCommentByPodcastId(CreateComment) returns (ID);
-    rpc GetCommentsByPodcastId(ID) returns (AllComments);
+    rpc GetCommentsByPodcastId(CommentFilter) returns (AllComments);
     rpc CreateCommentByEpisodeId(EpisodeComment) returns (ID);
-    rpc GetCommentsByEpisodeId(ID) returns (AllComments);
+    rpc GetCommentsByEpisodeId(CommentFilter) returns (AllComments);
     rpc CountComments(CountFilter) returns (CommentCount);
+    rpc ValidateCommentId(ID) returns (Exists);
 }
 
 message CreateComment{
@@ -53,4 +54,14 @@ message CommentCount{
 message CountFilter{
   string EpisodeId = 1;
   string PodcastId = 2;
+}
+
+message CommentFilter {
+  string id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message Exists {
+  bool Exists = 1;
 }

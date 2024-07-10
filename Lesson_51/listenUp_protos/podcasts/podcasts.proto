@@ -9,7 +9,9 @@ service Podcasts {
     rpc GetPodcastById(ID) returns (Podcast) {}
     rpc UpdatePodcast(PodcastUpdate) returns (Void) {}
     rpc DeletePodcast(ID) returns (Void) {}
-    rpc GetUserPodcasts(ID) returns (UserPodcasts) {}
+    rpc GetUserPodcasts(Filter) returns (UserPodcasts) {}
+    rpc PublishPodcast(ID) returns (Success) {}
+    rpc ValidatePodcastId(ID) returns (Success) {}
 }
 
 message PodcastCreate {
@@ -17,6 +19,12 @@ message PodcastCreate {
     string title = 2;
     string description = 3;
     string status = 4;
+}
+
+message Filter {
+    string id = 1;
+    int32 limit = 2;
+    int32 offset = 3;
 }
 
 message ID {
@@ -47,3 +55,6 @@ message UserPodcasts {
     repeated Podcast Podcasts = 1;
 }
 
+message Success {
+    bool success = 1;
+}

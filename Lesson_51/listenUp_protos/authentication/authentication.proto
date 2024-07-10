@@ -27,7 +27,9 @@ message LogoutRequest {
 }
 
 message TokenRequest {
-    
+    string user_id = 1;
+    string token = 2; 
+    int64 expiresAt = 3;
 }
 
 message RegisterResponse {
@@ -35,7 +37,15 @@ message RegisterResponse {
 }
 
 message LoginResponse {
-    
+    string id = 1;
+    string username = 2;
+    string password = 3;
+}
+
+message UserToken {
+    string id = 1;
+    string username = 2;
+    string email = 3;
 }
 
 message LogoutResponse {

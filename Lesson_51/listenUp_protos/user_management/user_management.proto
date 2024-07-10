@@ -10,8 +10,8 @@ service UserManagement {
     rpc DeleteUser (ID) returns (Void);
     rpc GetUserProfile (ID) returns (Profile);
     rpc UpdateUserProfile (Profile) returns (Void);
+    rpc ValidateUserId(ID) returns (Success) {}
 }
-
 
 message ID {
     string id = 1;
@@ -37,4 +37,8 @@ message Profile {
     string location = 5;
     bytes avatar_image = 6;
     string website = 7;
+}
+
+message Success {
+    bool success = 1;
 }

@@ -11,6 +11,8 @@ service Collaborations {
     rpc UpdateCollaboratorByPodcastId(UpdateCollaborator) returns (Void);
     rpc DeleteCollaboratorByPodcastId(Ids) returns (Void);
     rpc GetAllPodcastsUsersWorkedOn(PodcastsId) returns (PodcastsId);
+    rpc ValidateInvitationId(ID) returns (Exists);
+    rpc ValidateCollaborationId(ID) returns (Exists);
 }
 
 message CreateInvite{
@@ -64,4 +66,8 @@ message UpdateCollaborator{
 
 message PodcastsId {
     repeated string PodcastsId = 1;
+}
+
+message Exists {
+    bool Exists = 1;
 }

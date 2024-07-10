@@ -8,6 +8,7 @@ service user_interactions {
     rpc LikeEpisodeOfPodcast(InteractEpisode) returns (ID) {}
     rpc DeleteLikeFromEpisodeOfPodcast(DeleteLike) returns (Success) {}
     rpc ListenEpisodeOfPodcast(InteractEpisode) returns (ID) {}
+    rpc ValidateUserInteractionId(ID) returns (Success) {}
 }
 
 message InteractEpisode {

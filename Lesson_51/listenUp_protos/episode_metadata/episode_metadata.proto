@@ -6,10 +6,10 @@ package episode_metadata;
 
 service episode_metadata {
     rpc CreateEpisodeMetaData(EpisodeMetadata) returns (Void) {}
-    rpc GetTrendingPodcasts(Void) returns (Podcasts) {}
-    rpc GetRecommendedPodcasts(ID) returns (Podcasts) {}
-    rpc GetPodcastsByGenre(Genres) returns (Podcasts) {}
-    rpc SearchPodcast(Title) returns (Podcasts) {}
+    rpc GetTrendingPodcasts(Pagination) returns (Podcasts) {}
+    rpc GetRecommendedPodcasts(IdPage) returns (Podcasts) {}
+    rpc GetPodcastsByGenre(Filter) returns (Podcasts) {}
+    rpc SearchEpisode(Title) returns (Episode) {}
 }
 
 message Void {}
@@ -30,13 +30,18 @@ message Podcasts {
     repeated Podcast Podcasts = 1;
 }
 
-message Genres {
+message Filter {
     repeated string Genres = 1;
+    Pagination pagination = 2;
+}
+
+message IdPage {
+    string id = 1;
+    Pagination pagination = 2;
 }
 
 message Title {
-    string Podcast_title = 1;
-    string Episode_title = 2;
+    string Episode_title = 1;
 }
 
 message ID {
@@ -52,4 +57,26 @@ message EpisodeMetadata{
 
 message PodcastsId {
     repeated string PodcastsId = 1;
+}
+
+message Episode {
+    string id = 1;
+    string podcast_id = 2;
+    string user_id = 3;
+    string title = 4;
+    bytes file_audio = 5;
+    string description = 6;
+    int64 duration = 7;
+    string genre = 8;
+    repeated string tags = 9;
+    int64 listen_count = 10;
+    int64 like_count = 11;
+    int64 comment_count = 12;
+    string created_at = 13;
+    string updated_at = 14;
+}
+
+message Pagination {
+    int64 limit = 1;
+    int64 offset = 2;
 }

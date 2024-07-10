@@ -6,10 +6,11 @@ package episodes;
 
 service EpisodesService {
     rpc CreatePodcastEpisode(EpisodeCreate) returns (ID) {}
-    rpc GetEpisodesByPodcastId(ID) returns (Episodes) {}
+    rpc GetEpisodesByPodcastId(Filter) returns (Episodes) {}
     rpc UpdateEpisode(IDs) returns (Void) {}
     rpc DeleteEpisode(IDsForDelete) returns (Void) {}
-    rpc PublishPodcast(ID) returns (Success) {}
+    rpc SearchEpisodeByTitle(Title) returns (Episode) {}
+    rpc ValidateEpisodeId(ID) returns (Success) {}
 }
 
 message EpisodeCreate {
@@ -21,6 +22,12 @@ message EpisodeCreate {
     int64 duration = 6;
     string genre = 7;
     repeated string tags = 8;
+}
+
+message Filter {
+    string id = 1;
+    int32 limit = 2;
+    int32 offset = 3;
 }
 
 message ID {
@@ -61,4 +68,8 @@ message IDsForDelete {
 
 message Success {
     bool success = 1;
+}
+
+message Title {
+    string title = 1;
 }
