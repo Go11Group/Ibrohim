@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+option go_package = "genproto/user";
+
+package user;
+
+service User {
+    rpc GetProfile (ID) returns (Profile);
+    rpc UpdateProfile (NewInfo) returns (Details);
+    rpc DeleteProfile (ID) returns (Void);
+}
+
+message ID {
+    string id = 1;
+}
+
+message Profile {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string full_name = 4;
+    string user_type = 5;
+    string address = 6;
+    string phone_number = 7;
+    string created_at = 8;
+    string updated_at = 9;
+}
+
+message NewInfo {
+    string id = 1;
+    string full_name = 2;
+    string address = 3;
+    string phone_number = 4;
+}
+
+message Details {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string full_name = 4;
+    string user_type = 5;
+    string address = 6;
+    string phone_number = 7;
+    string updated_at = 8;
+}
+
+message Void {}

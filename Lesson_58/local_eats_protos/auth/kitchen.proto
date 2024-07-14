@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+option go_package = "genproto/kitchen";
+
+package kitchen;
+
+service Kitchen {
+    rpc Create (CreateRequest) returns (CreateResponse);
+    rpc Get (ID) returns (Info);
+    rpc Update (NewData) returns (UpdatedData);
+    rpc Delete (ID) returns (Void);
+    rpc Fetch (Pagination) returns (Kitchens);
+    rpc Search (SearchDetails) returns (Kitchens);
+}
+
+message CreateRequest {
+    string owner_id = 1;
+    string name = 2;
+    string description = 3;
+    string cuisine_type = 4;
+    string address = 5;
+    string phone_number = 6;
+}
+
+message CreateResponse {
+    string id = 1;
+    string owner_id = 2;
+    string name = 3;
+    string description = 4;
+    string cuisine_type = 5;
+    string address = 6;
+    string phone_number = 7;
+    float rating = 8;
+    string created_at = 9;
+}
+
+message ID {
+    string id = 1;
+}
+
+message Info {
+    string id = 1;
+    string owner_id = 2;
+    string name = 3;
+    string description = 4;
+    string cuisine_type = 5;
+    string address = 6;
+    string phone_number = 7;
+    float rating = 8;
+    int32 total_orders = 9;
+    string created_at = 10;
+    string updated_at = 11;
+}
+
+message NewData {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    string phone_number = 4;
+}
+
+message UpdatedData {
+    string id = 1;
+    string owner_id = 2;
+    string name = 3;
+    string description = 4;
+    string cuisine_type = 5;
+    string address = 6;
+    string phone_number = 7;
+    float rating = 8;
+    string updated_at = 9;
+}
+
+message Void {}
+
+message Pagination {
+    int32 limit = 1;
+    int32 offset = 2;
+}
+
+message KitchenDetails {
+    string id = 1;
+    string name = 2;
+    string cuisine_type = 3;
+    float rating = 4;
+    int32 total_orders = 5;
+}
+
+message Kitchens {
+    repeated KitchenDetails kitchens = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+message SearchDetails {
+    string query = 1;
+    string cuisine_type = 2;
+    float rating = 3;
+    Pagination pagination = 4;
+}
