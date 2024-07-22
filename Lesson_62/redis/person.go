@@ -26,7 +26,12 @@ func (p *PersonRepo) Add(ctx context.Context, data *models.PersonInfo) (*models.
 		IsMarried: data.IsMarried,
 	}
 
-	if err := p.DB.Set(ctx, pn.ID, data, 0).Err(); err != nil {
+	dataByte, err := json.Marshal(data)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to marshal data")
+	}
+
+	if err := p.DB.Set(ctx, pn.ID, dataByte, 0).Err(); err != nil {
 		return nil, errors.Wrap(err, "failed to add person")
 	}
 
@@ -46,7 +51,7 @@ func (p *PersonRepo) Read(ctx context.Context, id string) (*models.PersonInfo, e
 
 	var pn models.PersonInfo
 	if err := json.Unmarshal([]byte(result), &pn); err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal person info")
+		return nil, errors.Wrap(err, "failed to unmarshal data")
 	}
 
 	return &pn, nil

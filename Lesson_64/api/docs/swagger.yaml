@@ -1,0 +1,80 @@
+definitions:
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.RefreshToken:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  models.Tokens:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: Authorazation API
+  title: Authorazation
+  version: "1.0"
+paths:
+  /login:
+    post:
+      description: Logs user in
+      parameters:
+      - description: User credentials
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tokens'
+        "400":
+          description: Invalid data
+          schema:
+            type: string
+        "500":
+          description: Server error while processing request
+          schema:
+            type: string
+      summary: Logs user in
+      tags:
+      - auth
+  /refresh-token:
+    post:
+      description: Refreshes refresh token
+      parameters:
+      - description: Refresh token
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.RefreshToken'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tokens'
+        "400":
+          description: Invalid data
+          schema:
+            type: string
+        "500":
+          description: Server error while processing request
+          schema:
+            type: string
+      summary: Refreshes refresh token
+      tags:
+      - auth
+swagger: "2.0"
