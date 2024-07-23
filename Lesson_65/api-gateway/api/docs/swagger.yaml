@@ -1,0 +1,297 @@
+basePath: /e-commerce
+definitions:
+  admin.NewDataNoID:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      image:
+        items:
+          type: string
+        type: array
+      password:
+        type: string
+      phone_number:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  admin.NewDataResp:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      image:
+        items:
+          type: string
+        type: array
+      password:
+        type: string
+      phone_number:
+        type: string
+      role:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  admin.NewUser:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  admin.NewUserResp:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  admin.UserDetails:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  admin.UserInfo:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      image:
+        items:
+          type: string
+        type: array
+      password:
+        type: string
+      phone_number:
+        type: string
+      role:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  admin.Users:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/admin.UserDetails'
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API Gateway of E-Commerce
+  title: E-Commerce
+  version: "1.0"
+paths:
+  /admin/user:
+    post:
+      description: Adds a new user
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/admin.NewUser'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admin.NewUserResp'
+        "400":
+          description: Invalid data
+          schema:
+            type: string
+        "500":
+          description: Server error while processing request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Adds user
+      tags:
+      - admin
+  /admin/user/{id}:
+    delete:
+      description: Deletes user info by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid user id
+          schema:
+            type: string
+        "500":
+          description: Server error while processing request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Deletes user
+      tags:
+      - admin
+    get:
+      description: Retrieves user info by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admin.UserInfo'
+        "400":
+          description: Invalid user id
+          schema:
+            type: string
+        "500":
+          description: Server error while processing request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Gets user
+      tags:
+      - admin
+    put:
+      description: Updates user info by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New user data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/admin.NewDataNoID'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admin.NewDataResp'
+        "400":
+          description: Invalid user id
+          schema:
+            type: string
+        "500":
+          description: Server error while processing request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Updates user
+      tags:
+      - admin
+  /admin/users:
+    get:
+      description: Retrieves users from the database by filtering
+      parameters:
+      - description: Full name
+        in: query
+        name: full_name
+        type: string
+      - description: Location
+        in: query
+        name: location
+        type: string
+      - description: Role
+        in: query
+        name: role
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of users per page
+        in: query
+        name: limit
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admin.Users'
+        "400":
+          description: Invalid pagination parameters
+          schema:
+            type: string
+        "500":
+          description: Server error while processing request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Fetches users
+      tags:
+      - admin
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

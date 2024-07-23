@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+option go_package = "genproto/location";
+
+package location;
+
+service Location {
+    rpc Add (NewLocation) returns (NewLocationResp);
+    rpc Get (ID) returns (LocationDetails);
+    rpc Update (NewData) returns (UpdData);
+    rpc Delete (ID) returns (Void);
+}
+
+message NewLocation {
+    string user_id = 1;
+    string address = 2;
+    string city = 3;
+    string state = 4;
+    string country = 5;
+    string postal_code = 6;
+}
+
+message NewLocationResp {
+    string id = 1;
+    string user_id = 2;
+    string address = 3;
+    string city = 4;
+    string state = 5;
+    string country = 6;
+    string postal_code = 7;
+    string created_at = 8;
+}
+
+message ID {
+    string id = 1;
+}
+
+message LocationDetails {
+    string id = 1;
+    string user_id = 2;
+    string address = 3;
+    string city = 4;
+    string state = 5;
+    string country = 6;
+    string postal_code = 7;
+    string created_at = 8;
+}
+
+message NewData {
+    string id = 1;
+    string address = 2;
+    string city = 3;
+    string state = 4;
+    string country = 5;
+    string postal_code = 6;
+}
+
+message UpdData {
+    string id = 1;
+    string user_id = 2;
+    string address = 3;
+    string city = 4;
+    string state = 5;
+    string country = 6;
+    string postal_code = 7;
+    string updated_at = 8;
+}
+
+message Void{}
