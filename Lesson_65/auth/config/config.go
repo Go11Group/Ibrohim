@@ -29,8 +29,8 @@ func coalesce(env string, defaultValue interface{}) interface{} {
 }
 
 func Load() *Config {
-	if err := godotenv.Load("/home/jons/go/src/github.com/projects/e-commerce/E-commerce/.env"); err != nil {
-		if err = godotenv.Load("/home/ibrohim/go/src/gitlab.com/golangN11/e-commerce/E-commerce/.env"); err != nil {
+	if err := godotenv.Load("/home/jons/go/src/github.com/projects/e-commerce/auth_service/.env"); err != nil {
+		if err = godotenv.Load("/home/ibrohim/go/src/gitlab.com/golangN11/e-commerce/auth_service/.env"); err != nil {
 			log.Fatal("Error loading .env file")
 		}
 	}

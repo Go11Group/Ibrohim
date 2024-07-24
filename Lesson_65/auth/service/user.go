@@ -2,25 +2,27 @@ package service
 
 import (
 	pb "auth-service/genproto/user"
+	"auth-service/models"
 	"auth-service/pkg/logger"
 	"auth-service/storage/postgres"
 	"context"
 	"database/sql"
-	"log/slog"
-
 	"github.com/pkg/errors"
+	"log/slog"
 )
 
 type UserService struct {
 	pb.UnimplementedUserServer
-	Repo   *postgres.UserRepo
-	Logger *slog.Logger
+	Repo    *postgres.UserRepo
+	RepoLoc *postgres.LocationRepo
+	Logger  *slog.Logger
 }
 
 func NewUserService(db *sql.DB) *UserService {
 	return &UserService{
-		Repo:   postgres.NewUserRepo(db),
-		Logger: logger.NewLogger(),
+		Repo:    postgres.NewUserRepo(db),
+		RepoLoc: postgres.NewLocationRepo(db),
+		Logger:  logger.NewLogger(),
 	}
 }
 
@@ -32,6 +34,19 @@ func (r *UserService) GetProfile(ctx context.Context, req *pb.Void) (*pb.Profile
 		r.Logger.Error(er.Error())
 		return nil, er
 	}
+
+	loc, err := r.RepoLoc.Read(ctx, res.Id)
+	if err != nil {
+		er := errors.Wrap(err, "failed to get user location")
+		r.Logger.Error(er.Error())
+		return nil, er
+	}
+	res.Address = loc.Address
+	res.City = loc.City
+	res.State = loc.State
+	res.Country = loc.Country
+	res.PostalCode = loc.PostalCode
+
 	r.Logger.Info("GetUserProfile has finished")
 	return res, nil
 }
@@ -44,6 +59,20 @@ func (r *UserService) UpdateProfile(ctx context.Context, req *pb.NewData) (*pb.U
 		r.Logger.Error(er.Error())
 		return nil, er
 	}
+	_, err = r.RepoLoc.Update(ctx, &models.NewLocation{
+		UserId:     res.Id,
+		Address:    req.Address,
+		City:       req.City,
+		State:      req.State,
+		Country:    req.Country,
+		PostalCode: req.PostalCode,
+	})
+	if err != nil {
+		er := errors.Wrap(err, "failed to update user location")
+		r.Logger.Error(er.Error())
+		return nil, er
+	}
+
 	r.Logger.Info("UpdateUserProfile has finished")
 	return res, nil
 }
@@ -53,6 +82,14 @@ func (r *UserService) DeleteProfile(ctx context.Context, req *pb.Void) (*pb.Void
 	err := r.Repo.DeleteProfile(ctx)
 	if err != nil {
 		er := errors.Wrap(err, "failed to delete profile")
+		r.Logger.Error(er.Error())
+		return nil, er
+	}
+	Id := ctx.Value("user_id").(string)
+
+	err = r.RepoLoc.Delete(ctx, Id)
+	if err != nil {
+		er := errors.Wrap(err, "failed to delete user location")
 		r.Logger.Error(er.Error())
 		return nil, er
 	}

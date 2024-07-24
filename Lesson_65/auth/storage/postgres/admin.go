@@ -4,7 +4,6 @@ import (
 	pb "auth-service/genproto/admin"
 	"context"
 	"database/sql"
-	"log"
 	"strconv"
 
 	"github.com/lib/pq"
@@ -114,11 +113,15 @@ func (r *AdminRepo) Delete(ctx context.Context, id *pb.ID) error {
 func (r *AdminRepo) FetchUsers(ctx context.Context, f *pb.Filter) (*pb.Users, error) {
 	query := `
 	select
-		id, username, email, password_hash, full_name, role, created_at, updated_at
+		id, username, email, password_hash, full_name, role, ul.country, u.created_at, u.updated_at
 	from
-		users
+		users u
+	join
+		user_locations ul
+	on
+		ul.user_id = u.id
 	where
-		deleted_at = 0
+		u.deleted_at = 0
 	`
 
 	if f.FullName != "" {
@@ -147,14 +150,13 @@ func (r *AdminRepo) FetchUsers(ctx context.Context, f *pb.Filter) (*pb.Users, er
 	var users []*pb.UserDetails
 	for rows.Next() {
 		var u pb.UserDetails
-		err = rows.Scan(&u.Id, &u.Username, &u.Email, &u.Password, &u.FullName, &u.Role,
-			&u.CreatedAt, &u.UpdatedAt)
+		err = rows.Scan(&u.Id, &u.Username, &u.Email, &u.Password, &u.FullName,
+			&u.Role, &u.Country, &u.CreatedAt, &u.UpdatedAt)
 		if err != nil {
 			return nil, errors.Wrap(err, "user scan failure")
 		}
 		users = append(users, &u)
 	}
-	log.Print(query)
 
 	return &pb.Users{
 		Users: users,

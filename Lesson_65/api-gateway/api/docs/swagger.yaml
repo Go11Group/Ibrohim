@@ -2,6 +2,12 @@ basePath: /e-commerce
 definitions:
   admin.NewDataNoID:
     properties:
+      address:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
       email:
         type: string
       full_name:
@@ -14,7 +20,11 @@ definitions:
         type: string
       phone_number:
         type: string
+      postal_code:
+        type: string
       role:
+        type: string
+      state:
         type: string
       username:
         type: string
@@ -44,13 +54,23 @@ definitions:
     type: object
   admin.NewUser:
     properties:
+      address:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
       email:
         type: string
       full_name:
         type: string
       password:
         type: string
+      postal_code:
+        type: string
       role:
+        type: string
+      state:
         type: string
       username:
         type: string
@@ -72,6 +92,8 @@ definitions:
     type: object
   admin.UserDetails:
     properties:
+      country:
+        type: string
       created_at:
         type: string
       email:
@@ -91,6 +113,12 @@ definitions:
     type: object
   admin.UserInfo:
     properties:
+      address:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
       created_at:
         type: string
       email:
@@ -107,7 +135,11 @@ definitions:
         type: string
       phone_number:
         type: string
+      postal_code:
+        type: string
       role:
+        type: string
+      state:
         type: string
       updated_at:
         type: string
@@ -124,6 +156,97 @@ definitions:
         items:
           $ref: '#/definitions/admin.UserDetails'
         type: array
+    type: object
+  user.NewData:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      image:
+        items:
+          type: string
+        type: array
+      password:
+        type: string
+      phone_number:
+        type: string
+      postal_code:
+        type: string
+      state:
+        type: string
+      username:
+        type: string
+    type: object
+  user.Profile:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      image:
+        items:
+          type: string
+        type: array
+      phone_number:
+        type: string
+      postal_code:
+        type: string
+      role:
+        type: string
+      state:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  user.UpdateResp:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      image:
+        items:
+          type: string
+        type: array
+      phone_number:
+        type: string
+      postal_code:
+        type: string
+      role:
+        type: string
+      state:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -287,6 +410,91 @@ paths:
       summary: Fetches users
       tags:
       - admin
+  /user/{id}:
+    delete:
+      description: Deletes user info by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid user id
+          schema:
+            type: string
+        "500":
+          description: Server error while processing request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Deletes user
+      tags:
+      - user
+    get:
+      description: Retrieves user profile by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.Profile'
+        "400":
+          description: Invalid user id
+          schema:
+            type: string
+        "500":
+          description: Server error while processing request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Gets user
+      tags:
+      - user
+    put:
+      description: Updates user info by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New user data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.NewData'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.UpdateResp'
+        "400":
+          description: Invalid user id or data
+          schema:
+            type: string
+        "500":
+          description: Server error while processing request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Updates user
+      tags:
+      - user
 schemes:
 - http
 securityDefinitions:

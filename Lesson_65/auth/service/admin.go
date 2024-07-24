@@ -2,6 +2,7 @@ package service
 
 import (
 	pb "auth-service/genproto/admin"
+	"auth-service/models"
 	"auth-service/pkg/logger"
 	"auth-service/storage/postgres"
 	"context"
@@ -13,14 +14,16 @@ import (
 
 type AdminService struct {
 	pb.UnimplementedAdminServer
-	Repo   *postgres.AdminRepo
-	Logger *slog.Logger
+	Repo    *postgres.AdminRepo
+	RepoLoc *postgres.LocationRepo
+	Logger  *slog.Logger
 }
 
 func NewAdminService(db *sql.DB) *AdminService {
 	return &AdminService{
-		Repo:   postgres.NewAdminRepo(db),
-		Logger: logger.NewLogger(),
+		Repo:    postgres.NewAdminRepo(db),
+		RepoLoc: postgres.NewLocationRepo(db),
+		Logger:  logger.NewLogger(),
 	}
 }
 
@@ -30,6 +33,20 @@ func (s *AdminService) AddUser(ctx context.Context, req *pb.NewUser) (*pb.NewUse
 	resp, err := s.Repo.Add(ctx, req)
 	if err != nil {
 		er := errors.Wrap(err, "failed to add user")
+		s.Logger.Error(er.Error())
+		return nil, er
+	}
+
+	_, err = s.RepoLoc.Add(ctx, &models.NewLocation{
+		UserId:     resp.Id,
+		Address:    req.Address,
+		City:       req.City,
+		State:      req.State,
+		Country:    req.Country,
+		PostalCode: req.PostalCode,
+	})
+	if err != nil {
+		er := errors.Wrap(err, "failed to add user location")
 		s.Logger.Error(er.Error())
 		return nil, er
 	}
@@ -48,6 +65,18 @@ func (s *AdminService) GetUser(ctx context.Context, req *pb.ID) (*pb.UserInfo, e
 		return nil, er
 	}
 
+	loc, err := s.RepoLoc.Read(ctx, resp.Id)
+	if err != nil {
+		er := errors.Wrap(err, "failed to get user location")
+		s.Logger.Error(er.Error())
+		return nil, er
+	}
+	resp.Address = loc.Address
+	resp.City = loc.City
+	resp.State = loc.State
+	resp.Country = loc.Country
+	resp.PostalCode = loc.PostalCode
+
 	s.Logger.Info("GetUser is finished")
 	return resp, nil
 }
@@ -62,6 +91,20 @@ func (s *AdminService) UpdateUser(ctx context.Context, req *pb.NewData) (*pb.New
 		return nil, er
 	}
 
+	_, err = s.RepoLoc.Update(ctx, &models.NewLocation{
+		UserId:     resp.Id,
+		Address:    req.Address,
+		City:       req.City,
+		State:      req.State,
+		Country:    req.Country,
+		PostalCode: req.PostalCode,
+	})
+	if err != nil {
+		er := errors.Wrap(err, "failed to update user location")
+		s.Logger.Error(er.Error())
+		return nil, er
+	}
+
 	s.Logger.Info("UpdateUser is finished")
 	return resp, nil
 }
@@ -72,6 +115,13 @@ func (s *AdminService) DeleteUser(ctx context.Context, req *pb.ID) (*pb.Void, er
 	err := s.Repo.Delete(ctx, req)
 	if err != nil {
 		er := errors.Wrap(err, "failed to delete user")
+		s.Logger.Error(er.Error())
+		return nil, er
+	}
+
+	err = s.RepoLoc.Delete(ctx, req.Id)
+	if err != nil {
+		er := errors.Wrap(err, "failed to delete user location")
 		s.Logger.Error(er.Error())
 		return nil, er
 	}

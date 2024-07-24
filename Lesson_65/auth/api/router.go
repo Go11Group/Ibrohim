@@ -22,10 +22,10 @@ func NewRouter(db *sql.DB) *gin.Engine {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	auth := router.Group("/auth")
-	// auth.POST("/register", h.Register)
+	auth.POST("/register", h.Register)
 	auth.POST("/login", h.Login)
 	auth.POST("/refresh-token", h.Refresh)
-	// auth.POST("/logout", h.Logout)
+	auth.POST("/logout", h.Logout)
 
 	return router
 }

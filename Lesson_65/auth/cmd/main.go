@@ -22,11 +22,11 @@ func main() {
 	}
 	cfg := config.Load()
 
-	var wg *sync.WaitGroup
+	var wg sync.WaitGroup
 	wg.Add(2)
 
-	go RunService(wg, db, cfg)
-	go RunRouter(wg, db, cfg)
+	go RunService(&wg, db, cfg)
+	go RunRouter(&wg, db, cfg)
 
 	wg.Wait()
 }

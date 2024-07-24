@@ -19,6 +19,11 @@ message NewUser {
     string password = 3;
     string full_name = 4;
     string role = 5;
+    string address = 6;
+    string city = 7;
+    string state = 8;
+    string country = 9;
+    string postal_code = 10;
 }
 
 message NewUserResp {
@@ -43,8 +48,13 @@ message UserInfo {
     string phone_number = 6;
     repeated string image = 7;
     string role = 8;
-    string created_at = 9;
-    string updated_at = 10;
+    string address = 9;
+    string city = 10;
+    string state = 11;
+    string country = 12;
+    string postal_code = 13;
+    string created_at = 14;
+    string updated_at = 15;
 }
 
 message NewData {
@@ -56,6 +66,11 @@ message NewData {
     string phone_number = 6;
     repeated string image = 7;
     string role = 8;
+    string address = 9;
+    string city = 10;
+    string state = 11;
+    string country = 12;
+    string postal_code = 13;
 }
 
 message NewDataNoID {
@@ -66,6 +81,11 @@ message NewDataNoID {
     string phone_number = 5;
     repeated string image = 6;
     string role = 7;
+    string address = 8;
+    string city = 9;
+    string state = 10;
+    string country = 11;
+    string postal_code = 12;
 }
 
 message NewDataResp {
@@ -115,8 +135,9 @@ message UserDetails {
     string password = 4;
     string full_name = 5;
     string role = 6;
-    string created_at = 7;
-    string updated_at = 8;
+    string country = 7;
+    string created_at = 8;
+    string updated_at = 9;
 }
 
 message Users {

@@ -1,14 +1,13 @@
 package tokens
 
 import (
+	"auth-service/config"
 	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/pkg/errors"
 )
-
-const refreshsigningkey = "hserfer"
 
 func GenerateRefreshToken(userID string) (string, error) {
 	token := *jwt.New(jwt.SigningMethodHS256)
@@ -18,7 +17,7 @@ func GenerateRefreshToken(userID string) (string, error) {
 	claims["iat"] = time.Now().Unix()
 	claims["exp"] = time.Now().Add(24 * time.Hour).Unix()
 
-	newToken, err := token.SignedString([]byte(refreshsigningkey))
+	newToken, err := token.SignedString([]byte(config.Load().REFRESH_TOKEN))
 	if err != nil {
 		log.Println(err)
 		return "", errors.Wrap(err, "failed to generate refresh token")
@@ -28,54 +27,61 @@ func GenerateRefreshToken(userID string) (string, error) {
 }
 
 func ValidateRefreshToken(tokenStr string) (bool, error) {
-	claims, err := ExtractRefreshClaims(tokenStr)
+	_, err := ExtractRefreshClaims(tokenStr)
 	if err != nil {
 		return false, errors.Wrap(err, "validation failure")
-	}
-
-	mp := *claims
-	exp, ok := mp["exp"].(float64)
-	if !ok {
-		return false, errors.New("expiration not found")
-	}
-
-	if float64(time.Now().Unix()) > exp {
-		return false, errors.New("token is expired")
 	}
 
 	return true, nil
 }
 
-func ExtractRefreshClaims(tokenStr string) (*jwt.MapClaims, error) {
+func ExtractRefreshClaims(tokenStr string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
-		return []byte(refreshsigningkey), nil
+		return []byte(config.Load().REFRESH_TOKEN), nil
 	})
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse refresh token")
 	}
 
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !(ok && token.Valid) {
+	if !token.Valid {
 		return nil, errors.New("invalid refresh token")
 	}
 
-	return &claims, nil
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, errors.New("invalid token claims")
+	}
+
+	return claims, nil
 }
 
 func GetUserIdFromRefreshToken(tokenStr string) (string, error) {
-	refreshToken, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-		return []byte(refreshsigningkey), nil
-	})
-	if err != nil || !refreshToken.Valid {
-		return "", errors.Wrap(err, "invalid token")
+	claims, err := ExtractRefreshClaims(tokenStr)
+	if err != nil {
+		return "", errors.Wrap(err, "extraction failure")
 	}
 
-	claims, ok := refreshToken.Claims.(jwt.MapClaims)
+	userID, ok := claims["user_id"].(string)
 	if !ok {
-		return "", errors.Wrap(err, "invalid payload")
+		return "", errors.New("user id not found")
 	}
-	userID := claims["user_id"].(string)
 
 	return userID, nil
+}
+
+func GetRefreshTokenExpiry(tokenStr string) (string, error) {
+	claims, err := ExtractRefreshClaims(tokenStr)
+	if err != nil {
+		return "", errors.Wrap(err, "extraction failure")
+	}
+
+	exp, ok := claims["exp"].(float64)
+	if !ok {
+		return "", errors.New("expiry date not found")
+	}
+
+	expiry := time.Unix(int64(exp), 0).Format(time.RFC3339)
+
+	return expiry, nil
 }

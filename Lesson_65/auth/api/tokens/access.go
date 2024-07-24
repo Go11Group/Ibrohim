@@ -1,14 +1,13 @@
 package tokens
 
 import (
+	"auth-service/config"
 	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/pkg/errors"
 )
-
-const accesssigningkey = "ssecca"
 
 func GenerateAccessToken(id, username, email string) (string, error) {
 	token := *jwt.New(jwt.SigningMethodHS256)
@@ -20,7 +19,7 @@ func GenerateAccessToken(id, username, email string) (string, error) {
 	claims["iat"] = time.Now().Unix()
 	claims["exp"] = time.Now().Add(1 * time.Hour).Unix()
 
-	newToken, err := token.SignedString([]byte(accesssigningkey))
+	newToken, err := token.SignedString([]byte(config.Load().ACCESS_TOKEN))
 
 	if err != nil {
 		log.Println(err)
