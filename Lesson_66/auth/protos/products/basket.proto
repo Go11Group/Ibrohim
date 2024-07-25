@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "genproto/basket";
+
+package basket;
+
+service Baskets {
+  rpc AddProduct (Basket) returns (Id);
+  rpc GetProducts (Id) returns ();
+  rpc RemoveProduct (PId) returns ();
+}
+
+message Basket {
+  string product_id = 1;
+  int64 quantity = 2;
+}
+message Id {
+  string id = 1;
+}

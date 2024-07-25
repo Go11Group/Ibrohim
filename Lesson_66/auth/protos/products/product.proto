@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+option go_package = "genproto/product";
+
+package product;
+
+service Productes {
+  rpc GetProducts (Pagination) returns (Products);
+  rpc PostMedia (Photos) returns (Void);
+  rpc CreateProduct (Product) returns (Id);
+  rpc GetProductById (Id) returns (Product);
+  rpc UpdateProduct (Update) returns (Product);
+  rpc DeleteProduct (Id) returns (Void);
+  rpc FetchProducts (Pagination) returns (Products);
+}
+message Void {}
+message Products {
+  repeated Product items = 1;
+}
+
+message Product {
+  string name = 1;
+  string description =2;
+  float price = 3;
+  int64 stock = 4;
+  map <string,string> discount = 5;
+  string id = 6;
+  repeated string image = 7;
+}
+message Id {
+  string id = 1;
+}
+message Update {
+  string id = 1;
+  Product product = 2;
+}
+message Photos {
+  string id = 1;
+  repeated string media = 2;
+}
+message Pagination{
+  int64 limit = 1;
+  int64 page = 2;
+}

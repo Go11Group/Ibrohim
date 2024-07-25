@@ -20,6 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("error while connecting to database: %v", err)
 	}
+	defer db.Close()
 	cfg := config.Load()
 
 	var wg sync.WaitGroup

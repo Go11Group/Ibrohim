@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+option go_package = "genproto/admin";
+
+package admin;
+
+service Admin {
+    rpc AddUser (NewUser) returns (NewUserResp);
+    rpc GetUser (ID) returns (UserInfo);
+    rpc UpdateUser (NewData) returns (NewDataResp);
+    rpc DeleteUser (ID) returns (Void);
+    rpc GetUserProducts (ProductsReq) returns (Products);
+    rpc FetchUsers (Filter) returns (Users);
+}
+
+message NewUser {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+    string full_name = 4;
+    string role = 5;
+    string address = 6;
+    string city = 7;
+    string state = 8;
+    string country = 9;
+    string postal_code = 10;
+}
+
+message NewUserResp {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string full_name = 4;
+    string role = 5;
+    string created_at = 6;
+}
+
+message ID {
+    string id = 1;
+}
+
+message UserInfo {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string password = 4;
+    string full_name = 5;
+    string phone_number = 6;
+    repeated string image = 7;
+    string role = 8;
+    string address = 9;
+    string city = 10;
+    string state = 11;
+    string country = 12;
+    string postal_code = 13;
+    string created_at = 14;
+    string updated_at = 15;
+}
+
+message NewData {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string password = 4;
+    string full_name = 5;
+    string phone_number = 6;
+    repeated string image = 7;
+    string role = 8;
+    string address = 9;
+    string city = 10;
+    string state = 11;
+    string country = 12;
+    string postal_code = 13;
+}
+
+message NewDataNoID {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+    string full_name = 4;
+    string phone_number = 5;
+    repeated string image = 6;
+    string role = 7;
+    string address = 8;
+    string city = 9;
+    string state = 10;
+    string country = 11;
+    string postal_code = 12;
+}
+
+message NewDataResp {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string password = 4;
+    string full_name = 5;
+    string phone_number = 6;
+    repeated string image = 7;
+    string role = 8;
+    string updated_at = 9;
+}
+
+message Void {}
+
+message Product {
+    string id = 1;
+    string name = 2;
+    int32 quantity = 3;
+}
+
+message ProductsReq {
+    string id = 1;
+    int32 page = 2;
+    int32 limit = 3;
+}
+
+message Products {
+    repeated Product purchases = 1;
+    int32 page = 2;
+    int32 limit = 3;
+}
+
+message Filter {
+    string full_name = 1;
+    string location = 2;
+    string role = 3;
+    int32 page = 4;
+    int32 limit = 5;
+}
+
+message UserDetails {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string password = 4;
+    string full_name = 5;
+    string role = 6;
+    string country = 7;
+    string created_at = 8;
+    string updated_at = 9;
+}
+
+message Users {
+    repeated UserDetails users = 1;
+    int32 page = 2;
+    int32 limit = 3;
+}
