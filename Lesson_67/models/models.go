@@ -7,6 +7,6 @@ type Product struct {
 }
 
 type Basket struct {
-	Items []Product `json:"items"`
-	Sum   float32   `json:"sum"`
+	Items []Product `redis:"items"`
+	Sum   float32   `redis:"sum"`
 }

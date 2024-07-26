@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type BasketClient interface {
 	AddProduct(ctx context.Context, in *NewProduct, opts ...grpc.CallOption) (*Void, error)
 	GetProducts(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Products, error)
+	UpdateProduct(ctx context.Context, in *Quantity, opts ...grpc.CallOption) (*Void, error)
 	RemoveProduct(ctx context.Context, in *Ids, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -53,6 +54,15 @@ func (c *basketClient) GetProducts(ctx context.Context, in *Id, opts ...grpc.Cal
 	return out, nil
 }
 
+func (c *basketClient) UpdateProduct(ctx context.Context, in *Quantity, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, "/basket.Basket/UpdateProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *basketClient) RemoveProduct(ctx context.Context, in *Ids, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, "/basket.Basket/RemoveProduct", in, out, opts...)
@@ -68,6 +78,7 @@ func (c *basketClient) RemoveProduct(ctx context.Context, in *Ids, opts ...grpc.
 type BasketServer interface {
 	AddProduct(context.Context, *NewProduct) (*Void, error)
 	GetProducts(context.Context, *Id) (*Products, error)
+	UpdateProduct(context.Context, *Quantity) (*Void, error)
 	RemoveProduct(context.Context, *Ids) (*Void, error)
 	mustEmbedUnimplementedBasketServer()
 }
@@ -81,6 +92,9 @@ func (UnimplementedBasketServer) AddProduct(context.Context, *NewProduct) (*Void
 }
 func (UnimplementedBasketServer) GetProducts(context.Context, *Id) (*Products, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProducts not implemented")
+}
+func (UnimplementedBasketServer) UpdateProduct(context.Context, *Quantity) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProduct not implemented")
 }
 func (UnimplementedBasketServer) RemoveProduct(context.Context, *Ids) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveProduct not implemented")
@@ -134,6 +148,24 @@ func _Basket_GetProducts_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Basket_UpdateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Quantity)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BasketServer).UpdateProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/basket.Basket/UpdateProduct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BasketServer).UpdateProduct(ctx, req.(*Quantity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Basket_RemoveProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Ids)
 	if err := dec(in); err != nil {
@@ -166,6 +198,10 @@ var Basket_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProducts",
 			Handler:    _Basket_GetProducts_Handler,
+		},
+		{
+			MethodName: "UpdateProduct",
+			Handler:    _Basket_UpdateProduct_Handler,
 		},
 		{
 			MethodName: "RemoveProduct",

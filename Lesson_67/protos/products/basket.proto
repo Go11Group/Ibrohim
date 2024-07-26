@@ -7,6 +7,7 @@ package basket;
 service Basket {
   rpc AddProduct (NewProduct) returns (Void);
   rpc GetProducts (Id) returns (Products);
+  rpc UpdateProduct (Quantity) returns (Void);
   rpc RemoveProduct (Ids) returns (Void);
 }
 
@@ -18,6 +19,12 @@ message NewProduct {
 
 message Id {
   string user_id = 1;
+}
+
+message Quantity {
+  string user_id = 1;
+  string product_id = 2;
+  int64 quantity = 3;
 }
 
 message Ids {

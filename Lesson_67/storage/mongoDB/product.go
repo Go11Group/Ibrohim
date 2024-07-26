@@ -25,9 +25,9 @@ func (p *ProductRepo) GetPrice(ctx context.Context, id string) (float32, error) 
 		Price float32 `bson:"price"`
 	}
 	filter := bson.M{"_id": id}
-	opts := bson.M{"price": 1}
+	opts := options.FindOne().SetProjection(bson.M{"price": 1})
 
-	err := p.col.FindOne(ctx, filter, options.FindOne().SetProjection(opts)).Decode(&res)
+	err := p.col.FindOne(ctx, filter, opts).Decode(&res)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return 0, errors.New("product not found")
