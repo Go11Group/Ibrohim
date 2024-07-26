@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "genproto/order";
+
+package order;
+
+service Orders {
+  rpc Purchase (Order) returns (Order);
+  rpc GetPurchasedProducts (Order) returns (Order);
+}
+message Order {
+  string product_id = 1;
+}
