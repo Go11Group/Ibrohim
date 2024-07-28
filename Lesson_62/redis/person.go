@@ -31,7 +31,7 @@ func (p *PersonRepo) Add(ctx context.Context, data *models.PersonInfo) (*models.
 		return nil, errors.Wrap(err, "failed to marshal data")
 	}
 
-	if err := p.DB.Set(ctx, pn.ID, dataByte, 0).Err(); err != nil {
+	if err := p.DB.Set(ctx, "person:"+pn.ID, dataByte, 0).Err(); err != nil {
 		return nil, errors.Wrap(err, "failed to add person")
 	}
 
@@ -39,7 +39,7 @@ func (p *PersonRepo) Add(ctx context.Context, data *models.PersonInfo) (*models.
 }
 
 func (p *PersonRepo) Read(ctx context.Context, id string) (*models.PersonInfo, error) {
-	res := p.DB.Get(ctx, id)
+	res := p.DB.Get(ctx, "person:"+id)
 	if res.Err() != nil {
 		return nil, errors.Wrap(res.Err(), "failed to read person")
 	}

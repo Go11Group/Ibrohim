@@ -1,14 +1,14 @@
 package models
 
 type Person struct {
-	ID        string
-	Name      string
-	Age       int
-	IsMarried bool
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Age       int    `json:"age"`
+	IsMarried bool   `json:"is_married"`
 }
 
 type PersonInfo struct {
-	Name      string
-	Age       int
-	IsMarried bool
+	Name      string `json:"name"`
+	Age       int    `json:"age"`
+	IsMarried bool   `json:"is_married"`
 }

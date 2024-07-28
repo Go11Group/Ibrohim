@@ -1,10 +1,8 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
-	"redis-crud/models"
+	"redis-crud/api"
 	"redis-crud/redis"
 )
 
@@ -14,25 +12,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	pRepo := redis.NewPersonRepo(db)
+	router := api.NewRouter(db)
 
-	p := models.PersonInfo{
-		Name:      "John Doe",
-		Age:       21,
-		IsMarried: false,
-	}
-
-	res, err := pRepo.Add(context.Background(), &p)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("Add result: %v\n", *res)
-
-	res2, err := pRepo.Read(context.Background(), res.ID)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("Person: %v\n", *res2)
+	router.Run(":8080")
 }
