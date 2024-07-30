@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+option go_package = "genproto/product";
+
+package product;
+
+service Product {
+  rpc CreateProduct (NewProduct) returns (InsertResp);
+  rpc GetProductById (Id) returns (ProductInfo);
+  rpc UpdateProduct (NewData) returns (UpdateResp);
+  rpc DeleteProduct (Id) returns (Void);
+  rpc FetchProducts (Filter) returns (Products);
+}
+
+message NewProduct {
+  string name = 1;
+  string description = 2;
+  string category = 3;
+  float price = 4;
+  int64 stock = 5;
+  Discount discount = 6;
+  repeated Image images = 7;
+}
+
+message InsertResp {
+  string id = 1;
+  string created_at = 2;
+}
+
+message Id {
+  string id = 1;
+}
+
+message Discount {
+  bool status = 1;
+  float discount_price = 2;
+}
+
+message Image {
+  string image_url = 1;
+}
+
+message ProductInfo {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string category = 4;
+  float price = 5;
+  int64 stock = 6;
+  Discount discount = 7;
+  repeated Image images = 8;
+  float rating = 9;
+  int32 comment_count = 10;
+  int32 purchase_count = 11;
+  string created_at = 12;
+}
+
+message NewData {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string category = 4;
+  float price = 5;
+  int64 stock = 6;
+  Discount discount = 7;
+}
+
+message NewDataNoId {
+  string name = 1;
+  string description = 2;
+  string category = 3;
+  float price = 4;
+  int64 stock = 5;
+  Discount discount = 6;
+}
+
+message UpdateResp {
+  string id = 1;
+  string updated_at = 2;
+}
+
+message Filter {
+  string name = 1;
+  string category = 2;
+  int32 comment_count = 3;
+  float rating = 4;
+  bool most_purchased = 5;
+  bool most_commented = 6;
+  bool most_recent = 7;
+  bool cheapest = 8;
+  bool most_expensive = 9;
+  bool discount = 10;
+  int32 page = 11;
+  int32 limit = 12;
+}
+
+message Products {
+  repeated ProductInfo products = 1;
+  int32 page = 2;
+  int32 limit = 3;
+}
+
+message Void{}

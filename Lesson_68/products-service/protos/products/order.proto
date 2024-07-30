@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "genproto/order";
+
+package order;
+
+service Order {
+  rpc Purchase (Msg) returns (Void);
+}
+
+message Msg {
+  bytes user_id = 1;
+}
+
+message Void {}

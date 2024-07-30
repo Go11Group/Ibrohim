@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option go_package = "genproto/basket";
+
+package basket;
+
+service Basket {
+  rpc AddProduct (NewProduct) returns (Void);
+  rpc GetProducts (Void) returns (Products);
+  rpc UpdateProduct (Quantity) returns (Void);
+  rpc RemoveProduct (Id) returns (Void);
+}
+
+message NewProduct {
+  string product_id = 1;
+  int64 quantity = 2;
+}
+
+message Quantity {
+  string product_id = 1;
+  int64 quantity = 2;
+}
+
+message Id {
+  string product_id = 1;
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  float price = 3;
+  int64 quantity = 4;
+}
+
+message Products {
+  repeated Product items = 1;
+}
+
+message Void{}
